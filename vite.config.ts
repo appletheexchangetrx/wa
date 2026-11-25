@@ -11,7 +11,7 @@ export default defineConfig({
       filename: 'sw.ts',
       registerType: 'prompt',
       injectRegister: null,
-      includeAssets: ['icons/pwa-192.png', 'icons/pwa-512.png', 'icons/apple-touch-icon.png'],
+      includeAssets: ['icons/app-icon.svg'],
       manifest: {
         id: '/wa/',
         name: 'WhatsApp — Apple The Exchange TRX',
@@ -25,9 +25,7 @@ export default defineConfig({
         theme_color: '#075e54',
         categories: ['business', 'communication'],
         icons: [
-          { src: '/wa/icons/pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: '/wa/icons/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-          { src: '/wa/icons/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: '/wa/icons/app-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
         ],
       },
       injectManifest: {
