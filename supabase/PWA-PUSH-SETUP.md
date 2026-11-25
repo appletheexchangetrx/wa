@@ -10,7 +10,7 @@ Generate the pair using the deployed `trx-vapid-generator` from a trusted termin
 Remove or rotate `VAPID_GENERATOR_SECRET` after generation. Never commit private keys or dispatch secrets. Do not regenerate VAPID keys after devices subscribe unless intentionally rotating the push identity.
 
 ## Enable scheduler
-Apply migrations in order, including `20261125050000_push_dispatch_delivery_tracking.sql` and `20261125051000_enable_push_scheduler_extensions.sql`. Confirm `pg_cron` and `pg_net` are enabled in Supabase Database → Extensions.
+Apply migrations in order, including `20261125050000_push_dispatch_delivery_tracking.sql`, `20261125051000_enable_push_scheduler_extensions.sql`, and `20261125052000_push_subscription_rate_limit.sql`. Confirm `pg_cron` and `pg_net` are enabled in Supabase Database → Extensions.
 
 ## Store scheduler secrets in Vault
 In Supabase SQL Editor, store the project URL and the exact same dispatch secret used in Edge Function Secrets:
