@@ -4,7 +4,7 @@ A mobile-first WhatsApp Cloud API inbox built with React, Vite, TypeScript and S
 
 ## Development
 
-```bash
+```sh
 npm install
 npm run dev
 ```
@@ -23,3 +23,9 @@ Configure **Settings → Pages → Build and deployment → GitHub Actions**. Th
 - Meta access tokens and app secrets must remain in Supabase Edge Function secrets; never put them in frontend code.
 
 This first version intentionally has no Supabase Auth. Public database policies are required for browser reads; see `supabase/migrations/202611250001_public_read_trx_messages.sql`. This grants anonymous read access to all rows in `trx_messages`; anyone with the public project URL/key can read the inbox. The public send Edge Function may also be invoked by others. Do not use this setup for private/customer-sensitive conversations without adding access controls.
+
+## PWA, offline messages and push notifications
+
+The app is configured as an installable PWA with a custom Workbox Service Worker. It precaches the app shell and stores up to 1,000 recent message rows in IndexedDB for offline reading. Message sending remains online-only. The sidebar includes a control to clear the local offline cache.
+
+Push notification implementation and Supabase setup instructions are in [supabase/PWA-PUSH-SETUP.md](supabase/PWA-PUSH-SETUP.md). Configure VAPID and dispatcher secrets and enable the scheduler before expecting automatic delivery.

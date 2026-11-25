@@ -6,6 +6,10 @@ import {
 } from 'lucide-react'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 import type { Conversation, MessageRow } from './types'
+import { cacheMessages, getCachedMessages } from './lib/offline'
+import NotificationSettings from './features/notifications/NotificationSettings'
+import PWAStatus from './components/PWAStatus'
+import OfflineCacheControl from './components/OfflineCacheControl'
 
 const formatTime = (value?: string | null) => {
   if (!value) return ''
@@ -35,22 +39,26 @@ function App() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const [connected, setConnected] = useState(false)
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [showChat, setShowChat] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const loadMessages = useCallback(async () => {
     if (!supabase) return
+    try {
+      const cached = await getCachedMessages()
+      if (cached.length) { setMessages(cached); setLoading(false) }
+    } catch (cacheError) { console.warn('Could not read local message cache', cacheError) }
+    if (!navigator.onLine) { setLoading(false); return }
     const { data, error: queryError } = await supabase
       .from('trx_messages')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(1000)
-    if (queryError) {
-      setError(queryError.message)
-      setLoading(false)
-      return
-    }
-    setMessages((data ?? []) as MessageRow[])
+    if (queryError) { setError(queryError.message); setLoading(false); return }
+    const rows = (data ?? []) as MessageRow[]
+    try { await cacheMessages(rows) } catch (cacheError) { console.warn('Could not update local message cache', cacheError) }
+    setMessages(rows)
     setError('')
     setLoading(false)
   }, [])
@@ -66,14 +74,24 @@ function App() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'trx_messages' }, (payload) => {
         if (payload.eventType === 'INSERT') {
           const next = payload.new as MessageRow
+          void cacheMessages([next]).catch((e) => console.warn('Message cache write failed', e))
           setMessages((current) => current.some((item) => item.id === next.id) ? current : [...current, next])
         } else if (payload.eventType === 'UPDATE') {
           const next = payload.new as MessageRow
+          void cacheMessages([next]).catch((e) => console.warn('Message cache update failed', e))
           setMessages((current) => current.map((item) => item.id === next.id ? next : item))
         }
       })
       .subscribe((status) => setConnected(status === 'SUBSCRIBED'))
-    return () => { void supabase?.removeChannel(channel) }
+    const handleOnline = () => { setIsOnline(true); void loadMessages() }
+    const handleOffline = () => setIsOnline(false)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+      void supabase?.removeChannel(channel)
+    }
   }, [loadMessages])
 
   const conversations = useMemo<Conversation[]>(() => {
@@ -107,6 +125,7 @@ function App() {
   const sendMessage = async () => {
     const message = draft.trim()
     if (!message || !active || !supabase || sending) return
+    if (!navigator.onLine) { setError('Anda sedang offline. Pesan tidak dikirim; silakan coba kembali setelah koneksi pulih.'); return }
     setSending(true)
     setError('')
     const { data, error: sendError } = await supabase.functions.invoke('trx-send-messages', {
@@ -142,6 +161,7 @@ function App() {
 
   return (
     <main className="app-shell">
+      <PWAStatus />
       <aside className={`sidebar ${showChat ? 'sidebar-hidden' : ''}`}>
         <header className="sidebar-header">
           <div className="profile-avatar">A</div>
@@ -174,7 +194,9 @@ function App() {
             </button>
           ))}
         </div>
-        <footer className="sidebar-footer"><span className={`connection-dot ${connected ? 'online' : ''}`} />{connected ? 'Terhubung ke realtime' : 'Menghubungkan…'}</footer>
+        <footer className="sidebar-footer"><span className={`connection-dot ${isOnline && connected ? 'online' : ''}`} />{!isOnline ? 'Offline — menampilkan riwayat lokal' : connected ? 'Terhubung ke realtime' : 'Menghubungkan…'}</footer>
+        <NotificationSettings />
+        <OfflineCacheControl />
       </aside>
 
       <section className={`chat-panel ${showChat ? 'chat-visible' : ''}`}>

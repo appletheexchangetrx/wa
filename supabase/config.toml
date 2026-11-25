@@ -1,0 +1,22 @@
+project_id = "axednjikcambzbkxyqpp"
+
+[functions.trx-webhook]
+verify_jwt = false
+
+[functions.trx-send-messages]
+verify_jwt = false
+
+[functions.trx-push-config]
+verify_jwt = false
+
+[functions.trx-push-subscribe]
+verify_jwt = false
+
+[functions.trx-push-unsubscribe]
+verify_jwt = false
+
+[functions.trx-push-dispatch]
+verify_jwt = false
+
+[functions.trx-vapid-generator]
+verify_jwt = false
