@@ -1,0 +1,10 @@
+import {assertEquals} from "jsr:@std/assert@1";
+import {isTrustedPushEndpoint} from "./push-endpoint.ts";
+Deno.test("accepts FCM endpoint",()=>assertEquals(isTrustedPushEndpoint("https://fcm.googleapis.com/fcm/send/example"),true));
+Deno.test("accepts Apple Web Push endpoint",()=>assertEquals(isTrustedPushEndpoint("https://web.push.apple.com/abc"),true));
+Deno.test("accepts Mozilla Web Push endpoint",()=>assertEquals(isTrustedPushEndpoint("https://updates.push.services.mozilla.com/wpush/v2/abc"),true));
+Deno.test("rejects untrusted host",()=>assertEquals(isTrustedPushEndpoint("https://attacker.example/push"),false));
+Deno.test("rejects hostname suffix spoof",()=>assertEquals(isTrustedPushEndpoint("https://fcm.googleapis.com.attacker.example/push"),false));
+Deno.test("rejects non-HTTPS",()=>assertEquals(isTrustedPushEndpoint("http://fcm.googleapis.com/push"),false));
+Deno.test("rejects nonstandard port",()=>assertEquals(isTrustedPushEndpoint("https://fcm.googleapis.com:444/push"),false));
+Deno.test("rejects URL credentials",()=>assertEquals(isTrustedPushEndpoint("https://user:pass@fcm.googleapis.com/push"),false));
