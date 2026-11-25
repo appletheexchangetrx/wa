@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ArrowLeft, Check, CheckCheck, CircleDashed, Menu, MessageCircle,
+  ArrowLeft, Check, CheckCheck, CircleDashed, MessageCircle,
   MoreVertical, Paperclip, Phone, Plus, Search, Send, Smile, Video,
   Wifi, WifiOff, X,
 } from 'lucide-react'
