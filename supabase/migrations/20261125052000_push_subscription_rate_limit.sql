@@ -4,6 +4,7 @@ create table if not exists private.trx_push_rate_limits(
   request_count integer not null default 0 check(request_count>=0),
   updated_at timestamptz not null default now()
 );
+alter table private.trx_push_rate_limits enable row level security;
 revoke all on table private.trx_push_rate_limits from public,anon,authenticated;
 grant select,insert,update,delete on table private.trx_push_rate_limits to service_role;
 
