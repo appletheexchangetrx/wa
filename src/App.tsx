@@ -43,7 +43,7 @@ function App() {
     const { data, error: queryError } = await supabase
       .from('trx_messages')
       .select('*')
-      .order('created_at', { ascending: true })
+      .order('created_at', { ascending: false })
       .limit(1000)
     if (queryError) {
       setError(queryError.message)
