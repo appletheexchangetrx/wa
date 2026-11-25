@@ -10,7 +10,7 @@ Deno.serve(async req=>{
  if(req.method!=="POST")return json({error:"Method not allowed"},405);
  if(!(req.headers.get("content-type")??"").toLowerCase().includes("application/json"))return json({error:"Content-Type must be application/json"},415);
  if(Number(req.headers.get("content-length")??0)>16384)return json({error:"Request body too large"},413);
- try{const body=await req.json(),sub=body?.subscription,endpoint=typeof sub?.endpoint==="string"?sub.endpoint:"",p256dh=typeof sub?.keys?.p256dh==="string"?sub.keys.p256dh:"",auth=typeof sub?.keys?.auth==="string"?sub.keys.auth:"";
+ try{const rawBody=await req.text();if(new TextEncoder().encode(rawBody).length>16384)return json({error:"Request body too large"},413);const body=JSON.parse(rawBody),sub=body?.subscription,endpoint=typeof sub?.endpoint==="string"?sub.endpoint:"",p256dh=typeof sub?.keys?.p256dh==="string"?sub.keys.p256dh:"",auth=typeof sub?.keys?.auth==="string"?sub.keys.auth:"";
   if(!isTrustedPushEndpoint(endpoint)||!/^[A-Za-z0-9_-]{40,200}$/.test(p256dh)||!/^[A-Za-z0-9_-]{16,100}$/.test(auth))return json({error:"Invalid or unsupported push subscription"},400);
   const db=admin();
   const forwarded=req.headers.get("x-forwarded-for");
