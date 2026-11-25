@@ -1,0 +1,44 @@
+name: Generate lockfile for PR branch
+
+on:
+  push:
+    branches:
+      - "feat/full-pwa-offline-push"
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/full-pwa-offline-push
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate deterministic npm lockfile
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Verify clean install and production build
+        run: |
+          npm ci
+          npm run build
+      - name: Switch project workflows to npm ci
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in (".github/workflows/ci.yml", ".github/workflows/deploy.yml"):
+              path = Path(name)
+              text = path.read_text()
+              text = text.replace("run: npm install", "run: npm ci")
+              path.write_text(text)
+          PY
+      - name: Commit lockfile and workflow updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json .github/workflows/ci.yml .github/workflows/deploy.yml
+          git commit -m "build: add npm lockfile and use npm ci"
+          git push origin HEAD:feat/full-pwa-offline-push
