@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.trx-push-dispatch]
 verify_jwt = false
+
+[functions.trx-vapid-generator]
+verify_jwt = false
