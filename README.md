@@ -28,4 +28,4 @@ Then enable **Settings → Pages → Build and deployment → GitHub Actions**. 
 - Sends text messages through the `trx-send-messages` Edge Function.
 - Meta access tokens and app secrets must remain in Supabase Edge Function secrets; never put them in frontend variables.
 
-This first version intentionally has no Supabase Auth. Public database policies are required for browser reads; see `supabase/migrations/202611250001_public_read_trx_messages.sql` and review the implications before applying.
+This first version intentionally has no Supabase Auth. Public database policies are required for browser reads; see `supabase/migrations/202611250001_public_read_trx_messages.sql` The migration has been applied to the connected Supabase project. This grants anonymous read access to all rows in `trx_messages`; anyone with the public project URL/key can read the inbox. Do not use this setup for private/customer-sensitive conversations without adding access controls.
