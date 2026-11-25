@@ -1,20 +1,26 @@
 /// <reference lib="webworker" />
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
+import { NavigationRoute, registerRoute } from 'workbox-routing'
 
 declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: Array<{ url: string; revision?: string | null }> }
 precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
+registerRoute(new NavigationRoute(createHandlerBoundToURL('/wa/index.html'), {
+  allowlist: [/^\/wa\//],
+}))
 
+self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  if (event.data?.type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting())
+})
 self.addEventListener('push', (event: PushEvent) => {
   let payload: { title?: string; body?: string; url?: string } = {}
   try { payload = event.data?.json() ?? {} }
   catch { payload = { title: 'WhatsApp', body: 'Anda menerima pesan baru.' } }
   event.waitUntil(self.registration.showNotification(payload.title || 'WhatsApp', {
     body: payload.body || 'Anda menerima pesan baru.',
-    icon: '/wa/icons/pwa-192.png',
-    badge: '/wa/icons/pwa-192.png',
+    icon: '/wa/icons/app-icon.svg',
+    badge: '/wa/icons/app-icon.svg',
     tag: 'wa-inbox-new-message',
-    renotify: true,
     data: { url: payload.url || '/wa/' },
   }))
 })
