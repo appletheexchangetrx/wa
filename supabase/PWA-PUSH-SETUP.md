@@ -32,7 +32,7 @@ order by start_time desc limit 10;
 - Android and supported desktop browsers: install using the browser's install UI.
 - iOS/iPadOS 16.4+: Add to Home Screen, open from the Home Screen icon, then grant notification permission. The app guides users through this requirement.
 - Push requires HTTPS and browser support.
-- Subscription endpoints are restricted to known FCM, Apple and Mozilla push-service hostnames; enabled devices are capped at 250.
+- Subscription endpoints are restricted to known FCM, Apple and Mozilla push-service hostnames; registration is rate-limited to 20 attempts per IP per hour and enabled devices are capped at 250.
 - Up to 1,000 recent messages are cached in IndexedDB. Use **Hapus cache offline** to remove local message data from this device.
 - Sending messages remains online-only. Push payloads do not include message text or customer phone numbers.
 
