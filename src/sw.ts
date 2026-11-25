@@ -18,8 +18,8 @@ self.addEventListener('push', (event: PushEvent) => {
   catch { payload = { title: 'WhatsApp', body: 'Anda menerima pesan baru.' } }
   event.waitUntil(self.registration.showNotification(payload.title || 'WhatsApp', {
     body: payload.body || 'Anda menerima pesan baru.',
-    icon: '/wa/icons/app-icon.svg',
-    badge: '/wa/icons/app-icon.svg',
+    icon: '/wa/icons/pwa-192.png',
+    badge: '/wa/icons/pwa-192.png',
     tag: 'wa-inbox-new-message',
     data: { url: payload.url || '/wa/' },
   }))
