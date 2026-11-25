@@ -18,7 +18,7 @@ Deno.serve(async req=>{
   try{vapid=JSON.parse(raw) as JsonWebKey}catch{return json({error:"VAPID_PRIVATE_KEY must contain a JSON JWK"},500)}
   try{
     const db=admin();
-    const {data:events,error:claimError}=await db.schema("private").rpc("claim_trx_push_outbox",{batch_size:20});
+    const {data:events,error:claimError}=await db.rpc("claim_trx_push_outbox",{batch_size:20});
     if(claimError)throw claimError;
     if(!events?.length)return json({success:true,processed:0});
     const {data:subs,error:subError}=await db.from("trx_push_subscriptions").select("id,endpoint,p256dh,auth").eq("enabled",true);
