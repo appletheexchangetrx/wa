@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined
+// Supabase project URL and publishable key are public client configuration.
+const url = 'https://axednjikcambzbkxyqpp.supabase.co'
+const key = 'sb_publishable_Vysddy5_b0uZ3iKgnkDTIw_X5O1pBEd'
 
-export const isSupabaseConfigured = Boolean(url && key && !key.startsWith('your_'))
-export const supabase = isSupabaseConfigured ? createClient(url!, key!, {
+export const isSupabaseConfigured = true
+export const supabase = createClient(url, key, {
   realtime: { params: { eventsPerSecond: 10 } },
-}) : null
+})
