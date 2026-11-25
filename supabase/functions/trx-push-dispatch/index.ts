@@ -12,7 +12,7 @@ Deno.serve(async req=>{
  const raw=Deno.env.get("VAPID_PRIVATE_KEY")??"",pub=Deno.env.get("VAPID_PUBLIC_KEY")??"",subject=Deno.env.get("VAPID_SUBJECT")??"";
  if(!raw||!/^[A-Za-z0-9_-]{80,100}$/.test(pub)||!validSubject(subject))return json({error:"VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY and a valid VAPID_SUBJECT are required"},503);
  let vapid:JsonWebKey;
- try{vapid=JSON.parse(raw) as JsonWebKey;if(vapid.kty!=="EC"||vapid.crv!=="P-256"||!vapid.d||!vapid.x||!vapid.y||vapidPublicKey(vapid)!==pub)throw new Error("VAPID key pair mismatch")}
+ try{vapid=JSON.parse(raw) as JsonWebKey;if(vapid.kty!=="EC"||vapid.crv!=="P-256"||!vapid.d||!vapid.x||!vapid.y||await vapidPublicKey(vapid)!==pub)throw new Error("VAPID key pair mismatch")}
  catch(e){console.error("VAPID configuration invalid",String(e));return json({error:"VAPID configuration is invalid or key pair does not match"},503)}
  try{
   const db=admin(),{data:events,error:claimError}=await db.rpc("claim_trx_push_outbox",{batch_size:10});
