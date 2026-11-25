@@ -23,6 +23,8 @@ jobs:
           node-version: 22
       - name: Test push endpoint validation
         run: deno test supabase/functions/_shared/push-endpoint.test.ts
+      - name: Type-check push Edge Functions
+        run: deno check supabase/functions/trx-vapid-generator/index.ts supabase/functions/trx-push-config/index.ts supabase/functions/trx-push-subscribe/index.ts supabase/functions/trx-push-unsubscribe/index.ts supabase/functions/trx-push-dispatch/index.ts
       - name: Install dependencies
         run: npm install
       - name: TypeScript and production build
