@@ -9,6 +9,7 @@ import type { Conversation, MessageRow } from './types'
 import { cacheMessages, getCachedMessages } from './lib/offline'
 import NotificationSettings from './features/notifications/NotificationSettings'
 import PWAStatus from './components/PWAStatus'
+import OfflineCacheControl from './components/OfflineCacheControl'
 
 const formatTime = (value?: string | null) => {
   if (!value) return ''
@@ -195,6 +196,7 @@ function App() {
         </div>
         <footer className="sidebar-footer"><span className={`connection-dot ${isOnline && connected ? 'online' : ''}`} />{!isOnline ? 'Offline — menampilkan riwayat lokal' : connected ? 'Terhubung ke realtime' : 'Menghubungkan…'}</footer>
         <NotificationSettings />
+        <OfflineCacheControl />
       </aside>
 
       <section className={`chat-panel ${showChat ? 'chat-visible' : ''}`}>
