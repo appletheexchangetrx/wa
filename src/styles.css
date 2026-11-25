@@ -134,3 +134,8 @@ button { border: 0; cursor: pointer; }
 .notification-toggle{display:flex;align-items:center;gap:9px;width:100%;border:0;background:transparent;color:inherit;padding:7px 0;text-align:left;cursor:pointer}
 .notification-toggle:disabled{opacity:.6;cursor:wait}
 .notification-settings small{display:block;color:#667781;font-size:11px;line-height:1.45;margin-top:3px}
+
+.offline-cache-control{display:flex;flex-direction:column;gap:5px;padding:8px 16px 12px;border-top:1px solid var(--border,#e8e8e8)}
+.offline-cache-control button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;border:1px solid var(--border,#d8d8d8);border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:12px;cursor:pointer}
+.offline-cache-control button:disabled{opacity:.55;cursor:wait}
+.offline-cache-control small{color:var(--muted,#667085);font-size:11px;line-height:1.4}
