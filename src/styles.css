@@ -125,3 +125,12 @@ button { border: 0; cursor: pointer; }
   .composer input { height: 42px; }
   .conversation { padding-left: 14px; }
 }
+
+
+.pwa-status{position:fixed;z-index:100;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;max-width:min(94vw,620px);padding:10px 14px;border-radius:12px;background:#173f39;color:#fff;box-shadow:0 8px 28px rgba(0,0,0,.2);font-size:13px}
+.pwa-status button{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:8px;padding:6px 9px;color:inherit;background:rgba(255,255,255,.14);cursor:pointer}
+.pwa-offline{background:#6b4b12}
+.notification-settings{padding:10px 16px;border-top:1px solid rgba(0,0,0,.06)}
+.notification-toggle{display:flex;align-items:center;gap:9px;width:100%;border:0;background:transparent;color:inherit;padding:7px 0;text-align:left;cursor:pointer}
+.notification-toggle:disabled{opacity:.6;cursor:wait}
+.notification-settings small{display:block;color:#667781;font-size:11px;line-height:1.45;margin-top:3px}
